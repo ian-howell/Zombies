@@ -1,5 +1,6 @@
 #include "constants.h"
 #include "system.h"
+#include "bitmaps.h"
 
 #include <allegro.h>
 
@@ -16,15 +17,11 @@ int main()
     LOCK_FUNCTION(ticker);
     install_int_ex(ticker, BPS_TO_TIMER(FPS));
 
-    BITMAP* buffer = create_bitmap(WIDTH, HEIGHT);
-    if (!buffer)
-    {
-        allegro_message("Could not create buffer\n");
-        return 1;
-    }
-
     int x = (WIDTH / 2) - (WIDTH / 4);
     int dir = 1;
+
+    extern BITMAP* buffer;
+    load_bitmaps();
 
     bool done = false;
     while (!done)
@@ -63,6 +60,8 @@ int main()
         circle(buffer, x, HEIGHT / 2, 20, makecol(255, 0, 0));
         blit(buffer, screen, 0, 0, 0, 0, WIDTH, HEIGHT);
     }
+
+    free_bitmaps();
 
     return 0;
 }
