@@ -1,6 +1,7 @@
 #include "constants.h"
 #include "system.h"
 #include "bitmaps.h"
+#include "player.h"
 
 #include <allegro.h>
 
@@ -17,8 +18,7 @@ int main()
     LOCK_FUNCTION(ticker);
     install_int_ex(ticker, BPS_TO_TIMER(FPS));
 
-    int x = (WIDTH / 2) - (WIDTH / 4);
-    int dir = 1;
+    Player player;
 
     extern BITMAP* buffer;
     load_bitmaps();
@@ -44,10 +44,7 @@ int main()
                 break;
             }
 
-            if (x + dir > 0.75 * WIDTH || x + dir < 0.25 * WIDTH)
-                dir *= -1;
-
-            x += dir;
+            player.move();
 
             // if the logic takes too long, abort and draw a frame
             ticks--;
@@ -57,7 +54,7 @@ int main()
 
         // draw everything
         clear_to_color(buffer, makecol(0, 0, 0));
-        circle(buffer, x, HEIGHT / 2, 20, makecol(255, 0, 0));
+        player.draw(buffer);
         blit(buffer, screen, 0, 0, 0, 0, WIDTH, HEIGHT);
     }
 
