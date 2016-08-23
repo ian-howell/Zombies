@@ -11,23 +11,14 @@ Player::Player(int x, int y, int r) : Movable(x, y)
 
 void Player::move()
 {
-    int newx = x + dx;
-    int newy = y + dy;
-
-    if (newx + r > WIDTH || newx - r < 0)
-    {
-        dx *= -1;
-        newx = x + dx;
-    }
-
-    if (newy + r > HEIGHT || newy - r < 0)
-    {
-        dy *= -1;
-        newy = y + dy;
-    }
-
-    x = newx;
-    y = newy;
+    if (key[KEY_W] && ((y - r) - dy) > 0)
+        y -= dy;
+    if (key[KEY_S] && (y + r + dy) < HEIGHT)
+        y += dy;
+    if (key[KEY_A] && ((x - r) - dx) > 0)
+        x -= dx;
+    if (key[KEY_D] && (x + r + dx) < WIDTH)
+        x += dx;
 }
 
 void Player::draw(BITMAP* buffer)
