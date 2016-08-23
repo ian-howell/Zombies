@@ -18,7 +18,7 @@ int main()
     LOCK_FUNCTION(ticker);
     install_int_ex(ticker, BPS_TO_TIMER(FPS));
 
-    Player player;
+    Player player(10, 10, 10);
 
     extern BITMAP* buffer;
     load_bitmaps();

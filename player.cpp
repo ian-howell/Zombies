@@ -1,11 +1,9 @@
 #include "player.h"
 #include "constants.h"
 
-Player::Player()
+Player::Player(int x, int y, int r) : Movable(x, y)
 {
-    x = 10;
-    y = 10;
-    r = 10;
+    this->r = r;
 
     dx = 2;
     dy = 2;
