@@ -16,6 +16,13 @@ int main()
     LOCK_FUNCTION(ticker);
     install_int_ex(ticker, BPS_TO_TIMER(FPS));
 
+    BITMAP* buffer = create_bitmap(WIDTH, HEIGHT);
+    if (!buffer)
+    {
+        allegro_message("Could not create buffer\n");
+        return 1;
+    }
+
     int x = (WIDTH / 2) - (WIDTH / 4);
     int dir = 1;
 
@@ -52,8 +59,9 @@ int main()
         }
 
         // draw everything
-        clear_to_color(screen, makecol(0, 0, 0));
-        circle(screen, x, HEIGHT / 2, 20, makecol(255, 0, 0));
+        clear_to_color(buffer, makecol(0, 0, 0));
+        circle(buffer, x, HEIGHT / 2, 20, makecol(255, 0, 0));
+        blit(buffer, screen, 0, 0, 0, 0, WIDTH, HEIGHT);
     }
 
     return 0;
