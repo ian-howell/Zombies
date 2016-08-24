@@ -6,9 +6,6 @@
 
 Player::Player(int x, int y) : Movable(x, y, player_sprite)
 {
-    bottom = top + sprite->h;
-    right = left + sprite->w;
-
     speed = 2;
 }
 

@@ -6,6 +6,8 @@ Movable::Movable(int x, int y, BITMAP* sprite)
 
     this->top = (y - (sprite->h / 2));
     this->left = (x - (sprite->w / 2));
+    this->bottom = top + sprite->h;
+    this->right = left + sprite->w;
 
     this->theta = 0;
 }
