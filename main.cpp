@@ -7,8 +7,9 @@
 
 enum
 {
+    TITLE,
     PLAY,
-    PAUSE
+    PAUSE,
 };
 
 volatile int ticks = 0;
@@ -34,7 +35,7 @@ int main()
 
     Player player(10, 10);
 
-    char state = PLAY;
+    char state = TITLE;
 
     bool done = false;
     while (!done)
@@ -53,6 +54,10 @@ int main()
             // logic
             switch (state)
             {
+                case TITLE:
+                    if (key[KEY_ENTER])
+                        state = PLAY;
+                    break;
                 case PLAY:
                     player.move();
 
@@ -92,6 +97,15 @@ int main()
 
         switch (state)
         {
+            case TITLE:
+                clear_to_color(buffer, makecol(0, 0, 0));
+                textout_centre_ex(buffer, font, "ZOMBIES!", WIDTH / 2,
+                        (HEIGHT / 2) - font_height,
+                        makecol(255, 0, 0), -1);
+                textout_centre_ex(buffer, font, "Press ENTER to begin", WIDTH / 2,
+                        (HEIGHT / 2) + font_height,
+                        makecol(255, 0, 0), -1);
+                break;
             case PLAY:
                 draw_sprite(buffer, background_sprite, 0, 0);
                 player.draw(buffer);
