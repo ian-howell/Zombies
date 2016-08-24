@@ -112,11 +112,9 @@ int main()
                 break;
             case PAUSE:
                 textout_centre_ex(buffer, font, "PAUSE", WIDTH / 2,
-                        (HEIGHT / 2) - font_height,
-                        makecol(0, 0, 0), -1);
+                        (HEIGHT / 2) - font_height, makecol(0, 0, 0), -1);
                 textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
-                        (HEIGHT / 2) + font_height,
-                        makecol(0, 0, 0), -1);
+                        (HEIGHT / 2) + font_height, makecol(0, 0, 0), -1);
                 break;
         }
 
