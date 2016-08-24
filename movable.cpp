@@ -4,6 +4,9 @@ Movable::Movable(int x, int y, BITMAP* sprite)
 {
     this->sprite = sprite;
 
+    this->x = x;
+    this->y = y;
+
     this->top = (y - (sprite->h / 2));
     this->left = (x - (sprite->w / 2));
     this->bottom = top + sprite->h;
