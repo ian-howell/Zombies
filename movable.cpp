@@ -6,9 +6,11 @@ Movable::Movable(int x, int y, BITMAP* sprite)
 
     this->top = (y - (sprite->h / 2));
     this->left = (x - (sprite->w / 2));
+
+    this->theta = 0;
 }
 
 void Movable::draw(BITMAP* buffer)
 {
-    draw_sprite(buffer, sprite, left, top);
+    rotate_sprite(buffer, sprite, left, top, theta);
 }

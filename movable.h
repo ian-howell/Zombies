@@ -19,6 +19,8 @@ class Movable
         int left;
         int right;
 
+        double theta;
+
         BITMAP* sprite;
 };
 #endif
