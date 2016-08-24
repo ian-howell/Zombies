@@ -5,6 +5,12 @@
 
 #include <allegro.h>
 
+enum
+{
+    PLAY,
+    PAUSE
+};
+
 volatile int ticks = 0;
 void ticker() { ticks++; } END_OF_FUNCTION(ticker)
 
@@ -18,12 +24,17 @@ int main()
     LOCK_FUNCTION(ticker);
     install_int_ex(ticker, BPS_TO_TIMER(FPS));
 
-
     extern BITMAP* buffer;
     extern BITMAP* background_sprite;
     load_bitmaps();
 
+    int font_height = text_height(font);
+
+    bool key_debounce[KEY_MAX];
+
     Player player(10, 10);
+
+    char state = PLAY;
 
     bool done = false;
     while (!done)
@@ -40,13 +51,36 @@ int main()
             int old_ticks = ticks;
 
             // logic
-            if (key[KEY_ESC])
+            switch (state)
             {
-                done = true;
-                break;
+                case PLAY:
+                    player.move();
+
+                    if (key[KEY_P] && !key_debounce[KEY_P])
+                    {
+                        state = PAUSE;
+                        key_debounce[KEY_P] = true;
+                    }
+                    if (!key[KEY_P])
+                        key_debounce[KEY_P] = false;
+
+                    break;
+                case PAUSE:
+                    if (key[KEY_ESC])
+                    {
+                        done = true;
+                        break;
+                    }
+                    if (key[KEY_P] && !key_debounce[KEY_P])
+                    {
+                        state = PLAY;
+                        key_debounce[KEY_P] = true;
+                    }
+                    if (!key[KEY_P])
+                        key_debounce[KEY_P] = false;
+                    break;
             }
 
-            player.move();
 
             // if the logic takes too long, abort and draw a frame
             ticks--;
@@ -55,8 +89,22 @@ int main()
         }
 
         // draw everything
-        draw_sprite(buffer, background_sprite, 0, 0);
-        player.draw(buffer);
+
+        switch (state)
+        {
+            case PLAY:
+                draw_sprite(buffer, background_sprite, 0, 0);
+                player.draw(buffer);
+                break;
+            case PAUSE:
+                textout_centre_ex(buffer, font, "PAUSE", WIDTH / 2,
+                        (HEIGHT / 2) - font_height,
+                        makecol(0, 0, 0), -1);
+                textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
+                        (HEIGHT / 2) + font_height,
+                        makecol(0, 0, 0), -1);
+                break;
+        }
 
         blit(buffer, screen, 0, 0, 0, 0, WIDTH, HEIGHT);
     }
