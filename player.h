@@ -8,7 +8,7 @@
 class Player : public Movable
 {
     public:
-        Player(int top, int left);
+        Player(int x, int y);
         void move();
 
     private:

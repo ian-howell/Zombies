@@ -6,7 +6,7 @@
 class Movable
 {
     public:
-        Movable(int top, int left);
+        Movable(int x, int y, BITMAP* sprite);
         virtual void move() = 0;
         virtual void draw(BITMAP* buffer);
 

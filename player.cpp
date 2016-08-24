@@ -2,10 +2,8 @@
 #include "constants.h"
 #include "bitmaps.h"
 
-Player::Player(int top, int left) : Movable(top, left)
+Player::Player(int x, int y) : Movable(x, y, player_sprite)
 {
-    sprite = player_sprite;
-
     bottom = top + sprite->h;
     right = left + sprite->w;
 

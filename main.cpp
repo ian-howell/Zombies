@@ -33,7 +33,7 @@ int main()
 
     bool key_debounce[KEY_MAX];
 
-    Player player(10, 10);
+    Player player(WIDTH / 2, HEIGHT / 2);
 
     char state = TITLE;
 
