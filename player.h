@@ -8,11 +8,9 @@
 class Player : public Movable
 {
     public:
-        Player(int x, int y, int r);
+        Player(int top, int left);
         void move();
-        void draw(BITMAP* buffer);
 
     private:
-        int r;
 };
 #endif

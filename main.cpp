@@ -18,14 +18,12 @@ int main()
     LOCK_FUNCTION(ticker);
     install_int_ex(ticker, BPS_TO_TIMER(FPS));
 
-    Player player(10, 10, 10);
 
     extern BITMAP* buffer;
-    extern BITMAP* player_sprite;
-    extern BITMAP* zombie_sprite;
-    extern BITMAP* bullet_sprite;
     extern BITMAP* background_sprite;
     load_bitmaps();
+
+    Player player(10, 10);
 
     bool done = false;
     while (!done)
@@ -57,11 +55,10 @@ int main()
         }
 
         // draw everything
-        clear_to_color(buffer, makecol(0, 0, 0));
+        draw_sprite(buffer, background_sprite, 0, 0);
         player.draw(buffer);
 
         blit(buffer, screen, 0, 0, 0, 0, WIDTH, HEIGHT);
-
     }
 
     free_bitmaps();

@@ -6,15 +6,19 @@
 class Movable
 {
     public:
-        Movable(int x, int y);
+        Movable(int top, int left);
         virtual void move() = 0;
-        virtual void draw(BITMAP* buffer) = 0;
+        virtual void draw(BITMAP* buffer);
 
     protected:
-        int x;
-        int y;
-
         int dx;
         int dy;
+
+        int top;
+        int bottom;
+        int left;
+        int right;
+
+        BITMAP* sprite;
 };
 #endif
