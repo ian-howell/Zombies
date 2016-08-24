@@ -2,6 +2,7 @@
 #include "system.h"
 #include "bitmaps.h"
 #include "player.h"
+#include "mouse.h"
 
 #include <allegro.h>
 
@@ -109,6 +110,7 @@ int main()
             case PLAY:
                 draw_sprite(buffer, background_sprite, 0, 0);
                 player.draw(buffer);
+                draw_mouse(buffer);
                 break;
             case PAUSE:
                 textout_centre_ex(buffer, font, "PAUSE", WIDTH / 2,
