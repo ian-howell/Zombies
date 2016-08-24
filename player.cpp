@@ -9,35 +9,34 @@ Player::Player(int x, int y) : Movable(x, y, player_sprite)
     bottom = top + sprite->h;
     right = left + sprite->w;
 
-    dx = 2;
-    dy = 2;
+    speed = 2;
 }
 
 void Player::move()
 {
     // Motion
-    if (key[KEY_W] && top > dy)
+    if (key[KEY_W] && top > speed)
     {
-        top -= dy;
-        bottom -= dy;
+        top -= speed;
+        bottom -= speed;
     }
 
     if (key[KEY_S] && bottom < HEIGHT)
     {
-        top += dy;
-        bottom += dy;
+        top += speed;
+        bottom += speed;
     }
 
-    if (key[KEY_A] && left > dx)
+    if (key[KEY_A] && left > speed)
     {
-        left -= dx;
-        right -= dx;
+        left -= speed;
+        right -= speed;
     }
 
     if (key[KEY_D] && right < WIDTH)
     {
-        left += dx;
-        right += dx;
+        left += speed;
+        right += speed;
     }
 
     // Rotation

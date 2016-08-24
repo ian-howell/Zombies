@@ -11,8 +11,7 @@ class Movable
         virtual void draw(BITMAP* buffer);
 
     protected:
-        int dx;
-        int dy;
+        int speed;
 
         int top;
         int bottom;
