@@ -6,7 +6,7 @@
 
 Player::Player(int x, int y) : Movable(x, y, player_sprite)
 {
-    speed = 2;
+    speed = 7.0;
 }
 
 void Player::move()
