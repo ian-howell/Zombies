@@ -9,7 +9,7 @@ Player::Player(int x, int y) : Movable(x, y, player_sprite)
     speed = 7.0;
 }
 
-void Player::move()
+void Player::move(int to_x, int to_y)
 {
     // Motion
     if (key[KEY_W] && top > speed)

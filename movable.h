@@ -11,7 +11,7 @@ class Movable
         double getx() { return x; }
         double gety() { return y; }
 
-        virtual void move() = 0;
+        virtual void move(int to_x = 0, int to_y = 0) = 0;
         virtual void draw(BITMAP* buffer);
 
     protected:
