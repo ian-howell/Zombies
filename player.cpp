@@ -42,6 +42,5 @@ void Player::move()
 
     // Rotation
     double raw_theta = atan2(mouse_y - y, mouse_x - x);
-
-    theta = ftofix(raw_theta * 128 / M_PI);
+    theta = rad_to_fixed(raw_theta);
 }
