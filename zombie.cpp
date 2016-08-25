@@ -2,11 +2,13 @@
 #include "constants.h"
 #include "bitmaps.h"
 
+#include <ctime>
+#include <cstdlib>
 #include <cmath>
 
 Zombie::Zombie(int x, int y) : Movable(x, y, zombie_sprite)
 {
-    speed = 5.0;
+    speed = (rand() % 3) + 3;
 }
 
 void Zombie::move(int to_x, int to_y)
