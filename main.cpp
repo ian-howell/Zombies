@@ -2,8 +2,12 @@
 #include "system.h"
 #include "bitmaps.h"
 #include "player.h"
+#include "zombie.h"
 #include "mouse.h"
 
+#include <cstdlib>
+#include <time.h>
+#include <list>
 #include <allegro.h>
 
 enum
@@ -35,6 +39,10 @@ int main()
     bool key_debounce[KEY_MAX];
 
     Player player(WIDTH / 2, HEIGHT / 2);
+    std::list<Zombie*> zombies;
+
+    srand(time(NULL));
+    int spawn_timer = SPAWN_RATE;
 
     char state = TITLE;
 
@@ -60,13 +68,57 @@ int main()
                         state = PLAY;
                     break;
                 case PLAY:
+
                     player.move();
+
+                    if (rand() % spawn_timer == 0)
+                    {
+                        // reset the timer
+                        spawn_timer = SPAWN_RATE;
+
+                        int wall = rand() % 4;
+                        int randx = WIDTH / 2;
+                        int randy = HEIGHT / 2;
+
+                        if (wall == 0)
+                        {
+                            randy = rand() % HEIGHT;
+                            randx = 0;
+                        }
+                        else if (wall == 1)
+                        {
+                            randx = rand() % WIDTH;
+                            randy = 0;
+                        }
+                        else if (wall == 2)
+                        {
+                            randy = rand() % HEIGHT;
+                            randx = WIDTH;
+                        }
+                        else if (wall == 3)
+                        {
+                            randx = rand() % WIDTH;
+                            randy = HEIGHT;
+                        }
+
+                        zombies.push_back(new Zombie(randx, randy));
+                    }
+                    else
+                    {
+                        spawn_timer--;
+                    }
+
+                    for (std::list<Zombie*>::iterator it = zombies.begin(); it != zombies.end(); it++)
+                    {
+                        (*it)->move(player.getx(), player.gety());
+                    }
 
                     if (key[KEY_P] && !key_debounce[KEY_P])
                     {
                         state = PAUSE;
                         key_debounce[KEY_P] = true;
                     }
+
                     if (!key[KEY_P])
                         key_debounce[KEY_P] = false;
 
@@ -74,6 +126,10 @@ int main()
                 case PAUSE:
                     if (key[KEY_ESC])
                     {
+                        for (std::list<Zombie*>::iterator it = zombies.begin(); it != zombies.end(); it++)
+                        {
+                            delete *it;
+                        }
                         done = true;
                         break;
                     }
@@ -110,6 +166,10 @@ int main()
             case PLAY:
                 draw_sprite(buffer, background_sprite, 0, 0);
                 player.draw(buffer);
+
+                for (std::list<Zombie*>::iterator it = zombies.begin(); it != zombies.end(); it++)
+                    (*it)->draw(buffer);
+
                 draw_mouse(buffer);
                 break;
             case PAUSE:
