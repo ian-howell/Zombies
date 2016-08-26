@@ -15,6 +15,7 @@ enum
     TITLE,
     PLAY,
     PAUSE,
+    GAME_OVER,
 };
 
 volatile int ticks = 0;
@@ -111,6 +112,11 @@ int main()
                     for (std::list<Zombie*>::iterator it = zombies.begin(); it != zombies.end(); it++)
                     {
                         (*it)->move(player.getx(), player.gety());
+                        if ((*it)->overlaps(player, 10))
+                        {
+                            state = GAME_OVER;
+                            break;
+                        }
                     }
 
                     if (key[KEY_P] && !key_debounce[KEY_P])
@@ -133,6 +139,7 @@ int main()
                         done = true;
                         break;
                     }
+
                     if (key[KEY_P] && !key_debounce[KEY_P])
                     {
                         state = PLAY;
@@ -140,6 +147,18 @@ int main()
                     }
                     if (!key[KEY_P])
                         key_debounce[KEY_P] = false;
+                    break;
+                case GAME_OVER:
+
+                    if (key[KEY_ESC])
+                    {
+                        // Clear the zombie list
+                        for (std::list<Zombie*>::iterator it = zombies.begin(); it != zombies.end(); it++)
+                        {
+                            delete *it;
+                        }
+                        done = true;
+                    }
                     break;
             }
 
@@ -161,7 +180,7 @@ int main()
                         makecol(255, 0, 0), -1);
                 textout_centre_ex(buffer, font, "Press ENTER to begin", WIDTH / 2,
                         (HEIGHT / 2) + font_height,
-                        makecol(255, 0, 0), -1);
+                        makecol(255, 255, 255), -1);
                 break;
             case PLAY:
                 draw_sprite(buffer, background_sprite, 0, 0);
@@ -177,6 +196,13 @@ int main()
                         (HEIGHT / 2) - font_height, makecol(0, 0, 0), -1);
                 textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
                         (HEIGHT / 2) + font_height, makecol(0, 0, 0), -1);
+                break;
+            case GAME_OVER:
+                clear_to_color(buffer, makecol(0, 0, 0));
+                textout_centre_ex(buffer, font, "GAME OVER", WIDTH / 2,
+                        (HEIGHT / 2) - font_height, makecol(255, 0, 0), -1);
+                textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
+                        (HEIGHT / 2) + font_height, makecol(255, 255, 255), -1);
                 break;
         }
 
