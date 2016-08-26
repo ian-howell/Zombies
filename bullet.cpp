@@ -17,9 +17,5 @@ void Bullet::move(int to_x, int to_y)
     x += fixtof(fixcos(theta)) * speed;
     y += fixtof(fixsin(theta)) * speed;
 
-    left = x - sprite->w / 2.0;
-    right = x + sprite->w / 2.0;
-
-    top = y - sprite->h / 2.0;
-    bottom = y + sprite->h / 2.0;
+    set_boundaries();
 }

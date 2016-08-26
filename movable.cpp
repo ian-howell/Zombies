@@ -16,6 +16,15 @@ Movable::Movable(int x, int y, BITMAP* sprite)
     this->theta = 0;
 }
 
+void Movable::set_boundaries()
+{
+    left = x - sprite->w / 2.0;
+    right = x + sprite->w / 2.0;
+
+    top = y - sprite->h / 2.0;
+    bottom = y + sprite->h / 2.0;
+}
+
 bool Movable::overlaps(const Movable& other, int tol)
 {
     bool is_overlapping = (this->top + tol < other.bottom) &&
