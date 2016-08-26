@@ -13,16 +13,47 @@ void Player::move(int to_x, int to_y)
 {
     // Motion
     if (key[KEY_W] && top > speed)
-        y -= speed;
-
-    if (key[KEY_S] && bottom < HEIGHT)
-        y += speed;
-
-    if (key[KEY_A] && left > speed)
+    {
+        if (key[KEY_A] && left > speed)
+        {
+            x -= round(speed / sqrt(2.0));
+            y -= round(speed / sqrt(2.0));
+        }
+        else if (key[KEY_D] && right < WIDTH)
+        {
+            x += round(speed / sqrt(2.0));
+            y -= round(speed / sqrt(2.0));
+        }
+        else
+        {
+            y -= speed;
+        }
+    }
+    else if (key[KEY_S] && bottom < HEIGHT)
+    {
+        if (key[KEY_A] && left > speed)
+        {
+            x -= round(speed / sqrt(2.0));
+            y += round(speed / sqrt(2.0));
+        }
+        else if (key[KEY_D] && right < WIDTH)
+        {
+            x += round(speed / sqrt(2.0));
+            y += round(speed / sqrt(2.0));
+        }
+        else
+        {
+            y += speed;
+        }
+    }
+    else if (key[KEY_A] && left > speed)
+    {
         x -= speed;
-
-    if (key[KEY_D] && right < WIDTH)
+    }
+    else if (key[KEY_D] && right < WIDTH)
+    {
         x += speed;
+    }
 
     set_boundaries();
 
