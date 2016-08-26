@@ -3,6 +3,7 @@
 #include "bitmaps.h"
 #include "player.h"
 #include "zombie.h"
+#include "bullet.h"
 #include "mouse.h"
 
 #include <cstdlib>
@@ -40,8 +41,12 @@ int main()
     bool key_debounce[KEY_MAX];
 
     Player player(WIDTH / 2, HEIGHT / 2);
+
     std::list<Zombie*> zombies;
     std::list<Zombie*>::iterator z_it;
+
+    std::list<Bullet*> bullets;
+    std::list<Bullet*>::iterator b_it;
 
     srand(time(NULL));
     int spawn_timer = SPAWN_RATE;
@@ -66,12 +71,40 @@ int main()
             switch (state)
             {
                 case TITLE:
-                    if (key[KEY_ENTER])
+                    if (mouse_b & 1 || key[KEY_ENTER])
                         state = PLAY;
                     break;
                 case PLAY:
 
                     player.move();
+
+                    if (mouse_b & 1)
+                    {
+                        bullets.push_back(new Bullet(player.getx(), player.gety()));
+                    }
+
+                    for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)
+                    {
+                        (*b_it)->move();
+
+                        bool hit = false;
+                        for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
+                        {
+                            if ((*z_it)->overlaps(*(*b_it), 10))
+                            {
+                                delete *z_it;
+                                zombies.erase(z_it);
+                                hit = true;
+                                break;
+                            }
+                        }
+
+                        if (hit || !(*b_it)->in_bounds())
+                        {
+                            delete *b_it;
+                            bullets.erase(b_it++);
+                        }
+                    }
 
                     if (rand() % spawn_timer == 0)
                     {
@@ -137,6 +170,10 @@ int main()
                         {
                             delete *z_it;
                         }
+                        for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)
+                        {
+                            delete *b_it;
+                        }
                         done = true;
                         break;
                     }
@@ -185,6 +222,10 @@ int main()
                 break;
             case PLAY:
                 draw_sprite(buffer, background_sprite, 0, 0);
+
+                for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)
+                    (*b_it)->draw(buffer);
+
                 player.draw(buffer);
 
                 for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
