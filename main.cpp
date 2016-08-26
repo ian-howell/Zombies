@@ -49,7 +49,9 @@ int main()
     std::list<Bullet*>::iterator b_it;
 
     srand(time(NULL));
+
     int spawn_timer = SPAWN_RATE;
+    int shot_delay = 0;
 
     char state = TITLE;
 
@@ -78,9 +80,14 @@ int main()
 
                     player.move();
 
-                    if (mouse_b & 1)
+                    if (mouse_b & 1 && shot_delay <= 0)
                     {
                         bullets.push_back(new Bullet(player.getx(), player.gety()));
+                        shot_delay = SHOT_DELAY;
+                    }
+                    else if (shot_delay > 0)
+                    {
+                        shot_delay--;
                     }
 
                     for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)

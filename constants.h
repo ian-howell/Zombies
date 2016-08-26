@@ -7,6 +7,7 @@ const int WIDTH = 640;
 const int HEIGHT = 480;
 
 const int SPAWN_RATE = 200;
+const int SHOT_DELAY = 10;
 
 const int FPS = 30;
 
