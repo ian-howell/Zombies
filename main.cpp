@@ -97,7 +97,7 @@ int main()
                         bool hit = false;
                         for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
                         {
-                            if ((*z_it)->overlaps(*(*b_it), 10))
+                            if ((*z_it)->overlaps(*(*b_it)))
                             {
                                 delete *z_it;
                                 zombies.erase(z_it);

@@ -8,7 +8,7 @@
 
 Zombie::Zombie(int x, int y) : Movable(x, y, zombie_sprite)
 {
-    speed = (rand() % 3) + 3;
+    speed = (rand() % 3) + 4;
 }
 
 void Zombie::move(int to_x, int to_y)
