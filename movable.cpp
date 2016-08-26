@@ -15,6 +15,16 @@ Movable::Movable(int x, int y, BITMAP* sprite)
     this->theta = 0;
 }
 
+bool Movable::overlaps(const Movable& other, int tol)
+{
+    bool is_overlapping = (this->top + tol < other.bottom) &&
+                          (this->bottom - tol > other.top) &&
+                          (this->left + tol < other.right) &&
+                          (this->right - tol > other.left);
+
+    return is_overlapping;
+}
+
 void Movable::draw(BITMAP* buffer)
 {
     rotate_sprite(buffer, sprite, left, top, theta);
