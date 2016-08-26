@@ -1,4 +1,5 @@
 #include "movable.h"
+#include "constants.h"
 
 Movable::Movable(int x, int y, BITMAP* sprite)
 {
@@ -23,6 +24,14 @@ bool Movable::overlaps(const Movable& other, int tol)
                           (this->right - tol > other.left);
 
     return is_overlapping;
+}
+
+bool Movable::in_bounds()
+{
+    return (top > 0) &&
+           (bottom < HEIGHT) &&
+           (left > 0) &&
+           (right < WIDTH);
 }
 
 void Movable::draw(BITMAP* buffer)

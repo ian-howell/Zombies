@@ -12,6 +12,7 @@ class Movable
         double gety() { return y; }
 
         bool overlaps(const Movable& other, int tol = 0);
+        bool in_bounds();
 
         virtual void move(int to_x = 0, int to_y = 0) = 0;
         virtual void draw(BITMAP* buffer);
