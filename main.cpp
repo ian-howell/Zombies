@@ -202,6 +202,12 @@ int main()
                         {
                             delete *z_it;
                         }
+
+                        // Clear the bullet list
+                        for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)
+                        {
+                            delete *b_it;
+                        }
                         done = true;
                     }
                     break;
