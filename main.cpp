@@ -179,7 +179,7 @@ int main()
                 textout_centre_ex(buffer, font, "ZOMBIES!", WIDTH / 2,
                         (HEIGHT / 2) - font_height,
                         makecol(255, 0, 0), -1);
-                textout_centre_ex(buffer, font, "Press ENTER to begin", WIDTH / 2,
+                textout_centre_ex(buffer, font, "Press ENTER or click to begin", WIDTH / 2,
                         (HEIGHT / 2) + font_height,
                         makecol(255, 255, 255), -1);
                 break;

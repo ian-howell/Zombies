@@ -3,8 +3,6 @@
 
 #include "movable.h"
 
-#include <allegro.h>
-
 class Player : public Movable
 {
     public:
