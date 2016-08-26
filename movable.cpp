@@ -16,6 +16,13 @@ Movable::Movable(int x, int y, BITMAP* sprite)
     this->theta = 0;
 }
 
+void Movable::set_pos(int x, int y)
+{
+    this->x = x;
+    this->y = y;
+    set_boundaries();
+}
+
 void Movable::set_boundaries()
 {
     left = x - sprite->w / 2.0;

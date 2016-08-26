@@ -11,6 +11,7 @@ class Movable
         double getx() { return x; }
         double gety() { return y; }
 
+        void set_pos(int x, int y);
         void set_boundaries();
 
         bool overlaps(const Movable& other, int tol = 0);
