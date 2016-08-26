@@ -53,6 +53,9 @@ int main()
     int spawn_timer = SPAWN_RATE;
     int shot_delay = 0;
 
+    int score = 0;
+    int hiscore = 0;
+
     char state = TITLE;
 
     bool done = false;
@@ -104,6 +107,7 @@ int main()
                                 delete *z_it;
                                 zombies.erase(z_it);
                                 hit = true;
+                                score += 100;
                                 break;
                             }
                         }
@@ -210,9 +214,18 @@ int main()
                     }
                     bullets.clear();
 
+                    // Save the high score
+                    if (score > hiscore)
+                        hiscore = score;
+
+
                     if (key[KEY_R])
                     {
+                        // Reset the score for next game
+                        score = 0;
+
                         player.set_pos(WIDTH / 2, HEIGHT / 2);
+
                         state = PLAY;
                     }
 
@@ -258,6 +271,11 @@ int main()
                     (*z_it)->draw(buffer);
 
                 draw_mouse(buffer);
+
+                textprintf_ex(buffer, font, 0, 0, makecol(0, 0, 0), -1, "%-12s %d",
+                        "High Score:", hiscore);
+                textprintf_ex(buffer, font, 0, font_height, makecol(0, 0, 0), -1, "%-12s %d",
+                        "Score:", score);
                 break;
             case PAUSE:
                 textout_centre_ex(buffer, font, "PAUSE", WIDTH / 2,
