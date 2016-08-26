@@ -41,6 +41,7 @@ int main()
 
     Player player(WIDTH / 2, HEIGHT / 2);
     std::list<Zombie*> zombies;
+    std::list<Zombie*>::iterator z_it;
 
     srand(time(NULL));
     int spawn_timer = SPAWN_RATE;
@@ -109,10 +110,10 @@ int main()
                         spawn_timer--;
                     }
 
-                    for (std::list<Zombie*>::iterator it = zombies.begin(); it != zombies.end(); it++)
+                    for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
                     {
-                        (*it)->move(player.getx(), player.gety());
-                        if ((*it)->overlaps(player, 10))
+                        (*z_it)->move(player.getx(), player.gety());
+                        if ((*z_it)->overlaps(player, 10))
                         {
                             state = GAME_OVER;
                             break;
@@ -132,9 +133,9 @@ int main()
                 case PAUSE:
                     if (key[KEY_ESC])
                     {
-                        for (std::list<Zombie*>::iterator it = zombies.begin(); it != zombies.end(); it++)
+                        for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
                         {
-                            delete *it;
+                            delete *z_it;
                         }
                         done = true;
                         break;
@@ -153,9 +154,9 @@ int main()
                     if (key[KEY_ESC])
                     {
                         // Clear the zombie list
-                        for (std::list<Zombie*>::iterator it = zombies.begin(); it != zombies.end(); it++)
+                        for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
                         {
-                            delete *it;
+                            delete *z_it;
                         }
                         done = true;
                     }
@@ -186,8 +187,8 @@ int main()
                 draw_sprite(buffer, background_sprite, 0, 0);
                 player.draw(buffer);
 
-                for (std::list<Zombie*>::iterator it = zombies.begin(); it != zombies.end(); it++)
-                    (*it)->draw(buffer);
+                for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
+                    (*z_it)->draw(buffer);
 
                 draw_mouse(buffer);
                 break;
