@@ -196,20 +196,28 @@ int main()
                         key_debounce[KEY_P] = false;
                     break;
                 case GAME_OVER:
+                    // Clear the zombie list
+                    for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
+                    {
+                        delete *z_it;
+                    }
+                    zombies.clear();
+
+                    // Clear the bullet list
+                    for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)
+                    {
+                        delete *b_it;
+                    }
+                    bullets.clear();
+
+                    if (key[KEY_R])
+                    {
+                        player.set_pos(WIDTH / 2, HEIGHT / 2);
+                        state = PLAY;
+                    }
 
                     if (key[KEY_ESC])
                     {
-                        // Clear the zombie list
-                        for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
-                        {
-                            delete *z_it;
-                        }
-
-                        // Clear the bullet list
-                        for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)
-                        {
-                            delete *b_it;
-                        }
                         done = true;
                     }
                     break;
@@ -261,8 +269,10 @@ int main()
                 clear_to_color(buffer, makecol(0, 0, 0));
                 textout_centre_ex(buffer, font, "GAME OVER", WIDTH / 2,
                         (HEIGHT / 2) - font_height, makecol(255, 0, 0), -1);
-                textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
+                textout_centre_ex(buffer, font, "Press R to retart", WIDTH / 2,
                         (HEIGHT / 2) + font_height, makecol(255, 255, 255), -1);
+                textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
+                        (HEIGHT / 2) + (3 * font_height), makecol(255, 255, 255), -1);
                 break;
         }
 
