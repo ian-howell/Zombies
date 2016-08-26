@@ -75,6 +75,8 @@ int main()
                 case TITLE:
                     if (mouse_b & 1 || key[KEY_ENTER])
                         state = PLAY;
+                    if (key[KEY_ESC])
+                        done = true;
                     break;
                 case PLAY:
 
@@ -229,8 +231,11 @@ int main()
                 textout_centre_ex(buffer, font, "ZOMBIES!", WIDTH / 2,
                         (HEIGHT / 2) - font_height,
                         makecol(255, 0, 0), -1);
-                textout_centre_ex(buffer, font, "Press ENTER or click to begin", WIDTH / 2,
-                        (HEIGHT / 2) + font_height,
+                textout_centre_ex(buffer, font, "Press ENTER or click to begin",
+                        WIDTH / 2, (HEIGHT / 2) + font_height,
+                        makecol(255, 255, 255), -1);
+                textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
+                        (HEIGHT / 2) + (3 * font_height),
                         makecol(255, 255, 255), -1);
                 break;
             case PLAY:
