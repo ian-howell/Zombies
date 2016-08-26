@@ -36,11 +36,11 @@ int main()
     extern BITMAP* background_sprite;
     load_bitmaps();
 
-    int font_height = text_height(font);
+    int font_h = text_height(font);
 
     bool key_debounce[KEY_MAX];
 
-    Player player(WIDTH / 2, HEIGHT / 2);
+    Player player(MID_X, MID_Y);
 
     std::list<Zombie*> zombies;
     std::list<Zombie*>::iterator z_it;
@@ -81,6 +81,7 @@ int main()
                     if (key[KEY_ESC])
                         done = true;
                     break;
+
                 case PLAY:
 
                     player.move();
@@ -125,8 +126,8 @@ int main()
                         spawn_timer = SPAWN_RATE;
 
                         int wall = rand() % 4;
-                        int randx = WIDTH / 2;
-                        int randy = HEIGHT / 2;
+                        int randx = MID_X;
+                        int randy = MID_Y;
 
                         if (wall == 0)
                         {
@@ -174,21 +175,18 @@ int main()
 
                     if (!key[KEY_P])
                         key_debounce[KEY_P] = false;
-
                     break;
+
                 case PAUSE:
                     if (key[KEY_ESC])
                     {
                         for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
-                        {
                             delete *z_it;
-                        }
+
                         for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)
-                        {
                             delete *b_it;
-                        }
+
                         done = true;
-                        break;
                     }
 
                     if (key[KEY_P] && !key_debounce[KEY_P])
@@ -199,19 +197,14 @@ int main()
                     if (!key[KEY_P])
                         key_debounce[KEY_P] = false;
                     break;
+
                 case GAME_OVER:
-                    // Clear the zombie list
                     for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
-                    {
                         delete *z_it;
-                    }
                     zombies.clear();
 
-                    // Clear the bullet list
                     for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)
-                    {
                         delete *b_it;
-                    }
                     bullets.clear();
 
                     // Save the high score
@@ -224,7 +217,7 @@ int main()
                         // Reset the score for next game
                         score = 0;
 
-                        player.set_pos(WIDTH / 2, HEIGHT / 2);
+                        player.set_pos(MID_X, MID_Y);
 
                         state = PLAY;
                     }
@@ -249,16 +242,17 @@ int main()
         {
             case TITLE:
                 clear_to_color(buffer, makecol(0, 0, 0));
-                textout_centre_ex(buffer, font, "ZOMBIES!", WIDTH / 2,
-                        (HEIGHT / 2) - font_height,
+                textout_centre_ex(buffer, font, "ZOMBIES!", MID_X,
+                        MID_Y - font_h,
                         makecol(255, 0, 0), -1);
                 textout_centre_ex(buffer, font, "Press ENTER or click to begin",
-                        WIDTH / 2, (HEIGHT / 2) + font_height,
+                        MID_X, MID_Y + font_h,
                         makecol(255, 255, 255), -1);
-                textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
-                        (HEIGHT / 2) + (3 * font_height),
+                textout_centre_ex(buffer, font, "Press ESC to exit", MID_X,
+                        MID_Y + (3 * font_h),
                         makecol(255, 255, 255), -1);
                 break;
+
             case PLAY:
                 draw_sprite(buffer, background_sprite, 0, 0);
 
@@ -274,31 +268,33 @@ int main()
 
                 textprintf_ex(buffer, font, 0, 0, makecol(0, 0, 0), -1, "%-12s %d",
                         "High Score:", hiscore);
-                textprintf_ex(buffer, font, 0, font_height, makecol(0, 0, 0), -1, "%-12s %d",
+                textprintf_ex(buffer, font, 0, font_h, makecol(0, 0, 0), -1, "%-12s %d",
                         "Score:", score);
                 break;
+
             case PAUSE:
-                textout_centre_ex(buffer, font, "PAUSE", WIDTH / 2,
-                        (HEIGHT / 2) - font_height, makecol(0, 0, 0), -1);
-                textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
-                        (HEIGHT / 2) + font_height, makecol(0, 0, 0), -1);
+                textout_centre_ex(buffer, font, "PAUSE", MID_X,
+                        MID_Y - font_h, makecol(0, 0, 0), -1);
+                textout_centre_ex(buffer, font, "Press ESC to exit", MID_X,
+                        MID_Y + font_h, makecol(0, 0, 0), -1);
                 break;
+
             case GAME_OVER:
                 clear_to_color(buffer, makecol(0, 0, 0));
 
                 if (score >= hiscore)
                 {
-                    textprintf_centre_ex(buffer, font, WIDTH / 2,
-                            (HEIGHT / 2) - (3 * font_height), makecol(128, 255, 0), -1,
+                    textprintf_centre_ex(buffer, font, MID_X,
+                            MID_Y - (3 * font_h), makecol(128, 255, 0), -1,
                             "New high score: %d!", score);
                 }
 
-                textout_centre_ex(buffer, font, "GAME OVER", WIDTH / 2,
-                        (HEIGHT / 2) - font_height, makecol(255, 0, 0), -1);
-                textout_centre_ex(buffer, font, "Press R to retart", WIDTH / 2,
-                        (HEIGHT / 2) + font_height, makecol(255, 255, 255), -1);
-                textout_centre_ex(buffer, font, "Press ESC to exit", WIDTH / 2,
-                        (HEIGHT / 2) + (3 * font_height), makecol(255, 255, 255), -1);
+                textout_centre_ex(buffer, font, "GAME OVER", MID_X,
+                        MID_Y - font_h, makecol(255, 0, 0), -1);
+                textout_centre_ex(buffer, font, "Press R to retart", MID_X,
+                        MID_Y + font_h, makecol(255, 255, 255), -1);
+                textout_centre_ex(buffer, font, "Press ESC to exit", MID_X,
+                        MID_Y + (3 * font_h), makecol(255, 255, 255), -1);
                 break;
         }
 
