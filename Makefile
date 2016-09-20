@@ -1,16 +1,22 @@
 HEADERS = $(wildcard *.h)
-SOURCES = $(wildcard *.cpp)
-OBJECTS = $(SOURCES:%.cpp=%.o)
-LINKER = allegro-config --libs
+CXXSOURCES = $(wildcard *.cpp)
+CSOURCES = $(wildcard *.c)
+CXXOBJECTS = $(CXXSOURCES:%.cpp=%.o)
+COBJECTS = $(CSOURCES:%.c=%.o)
+LINKER = `allegro-config --libs` -lm -ludev
 C_FLAGS = -Wall --pedantic-errors -O2
 
 CPP = g++
+CC = gcc
 
-game: ${OBJECTS} ${HEADERS}
-	${CPP} ${C_FLAGS} ${OBJECTS} `allegro-config --libs` -o game
+game: ${CXXOBJECTS} ${COBJECTS} ${HEADERS}
+	${CPP} ${C_FLAGS} ${CXXOBJECTS} ${COBJECTS} ${LINKER} -o game
 
-%.o: %.cpp ${HEADERS}
+${CXXOBJECTS}: %.o : %.cpp
 	${CPP} -c $<
+
+${COBJECTS}: %.o : %.c
+	${CC} -c $<
 
 .PHONY: clean debug
 
