@@ -66,11 +66,15 @@ void Player::move(int to_x, int to_y)
 void Player::move(double raw_theta)
 {
     float lx, ly;
-
     GamepadStickNormXY(GAMEPAD_0, STICK_LEFT, &lx, &ly);
 
-    x += lx * speed;
-    y -= ly * speed;
+    // Allegro starts y=0 at the top and increases downward
+    ly = -ly;
+
+    if ((ly < 0 && top > 0) || (ly > 0 && bottom < HEIGHT))
+        y += ly * speed;
+    if ((lx < 0 && left > 0) || (lx > 0 && right < WIDTH))
+        x += lx * speed;
 
     set_boundaries();
 

@@ -239,7 +239,7 @@ int main()
                     break;
 
                 case PAUSE:
-                    if (key[KEY_ESC])
+                    if (key[KEY_ESC] || (gp_con && GamepadButtonTriggered(GAMEPAD_0, BUTTON_BACK)))
                     {
                         for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
                             delete *z_it;
