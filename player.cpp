@@ -1,6 +1,7 @@
 #include "player.h"
 #include "constants.h"
 #include "bitmaps.h"
+#include "gamepad.h"
 
 #include <cmath>
 
@@ -60,4 +61,18 @@ void Player::move(int to_x, int to_y)
     // Rotation
     double raw_theta = atan2(mouse_y - y, mouse_x - x);
     theta = rad_to_fixed(raw_theta);
+}
+
+void Player::move(double raw_theta)
+{
+    float lx, ly;
+
+    GamepadStickNormXY(GAMEPAD_0, STICK_LEFT, &lx, &ly);
+
+    x += lx * speed;
+    y -= ly * speed;
+
+    set_boundaries();
+
+    theta = rad_to_fixed(-raw_theta);
 }
