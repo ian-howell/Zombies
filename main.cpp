@@ -5,6 +5,7 @@
 #include "zombie.h"
 #include "bullet.h"
 #include "mouse.h"
+#include "gamepad.h"
 
 #include <cstdlib>
 #include <time.h>
@@ -50,13 +51,25 @@ int main()
 
     srand(time(NULL));
 
+    // The rate at which zombies spawn in
     int spawn_timer = SPAWN_RATE;
+
+    // The amount of time remaining until the player can shoot again
     int shot_delay = 0;
+
+    // The angle in which the player is facing. Only used when the controller
+    // is being used
+    float old_angle = 0.0;
 
     int score = 0;
     int hiscore = 0;
 
     char state = TITLE;
+
+    // Gamepad connection status
+    bool gp_con;
+    bool using_gp = false;
+    GamepadInit();
 
     bool done = false;
     while (!done)
@@ -72,28 +85,66 @@ int main()
         {
             int old_ticks = ticks;
 
+            GamepadUpdate();
+
+            // Check if the gamepad is connected
+            gp_con = GamepadIsConnected(GAMEPAD_0);
+
             // logic
             switch (state)
             {
                 case TITLE:
+                    if (gp_con && GamepadButtonTriggered(GAMEPAD_0, BUTTON_START))
+                    {
+                        state = PLAY;
+                        using_gp = true;
+                        break;
+                    }
+
                     if (mouse_b & 1 || key[KEY_ENTER])
                         state = PLAY;
+
                     if (key[KEY_ESC])
                         done = true;
+                    else if (gp_con && GamepadButtonTriggered(GAMEPAD_0, BUTTON_BACK))
+                        done = true;
+
                     break;
 
                 case PLAY:
 
-                    player.move();
+                    if (using_gp && gp_con)
+                    {
+                        // Update the player's angle if the right stick is being pressed
+                        if (GamepadStickLength(GAMEPAD_0, STICK_RIGHT) > 0)
+                            old_angle = GamepadStickAngle(GAMEPAD_0, STICK_RIGHT);
 
-                    if (mouse_b & 1 && shot_delay <= 0)
-                    {
-                        bullets.push_back(new Bullet(player.getx(), player.gety()));
-                        shot_delay = SHOT_DELAY;
+                        // Update the player's position and angle
+                        player.move(old_angle);
+
+                        if (shot_delay <= 0 && gp_con && GamepadStickLength(GAMEPAD_0, STICK_RIGHT) > 0 )
+                        {
+                            bullets.push_back(new Bullet(player.getx(), player.gety(), GamepadStickAngle(GAMEPAD_0, STICK_RIGHT)));
+                            shot_delay = SHOT_DELAY;
+                        }
+                        else if (shot_delay > 0)
+                        {
+                            shot_delay--;
+                        }
                     }
-                    else if (shot_delay > 0)
+                    else
                     {
-                        shot_delay--;
+                        player.move();
+
+                        if (shot_delay <= 0 && mouse_b & 1)
+                        {
+                            bullets.push_back(new Bullet(player.getx(), player.gety()));
+                            shot_delay = SHOT_DELAY;
+                        }
+                        else if (shot_delay > 0)
+                        {
+                            shot_delay--;
+                        }
                     }
 
                     for (b_it = bullets.begin(); b_it != bullets.end(); b_it++)
@@ -125,6 +176,7 @@ int main()
                         // reset the timer
                         spawn_timer = SPAWN_RATE;
 
+                        // Pick a random location along one of the walls
                         int wall = rand() % 4;
                         int randx = MID_X;
                         int randy = MID_Y;
@@ -150,6 +202,7 @@ int main()
                             randy = HEIGHT;
                         }
 
+                        // Spawn a zombie at the new location
                         zombies.push_back(new Zombie(randx, randy));
                     }
                     else
@@ -167,14 +220,22 @@ int main()
                         }
                     }
 
-                    if (key[KEY_P] && !key_debounce[KEY_P])
+                    if (using_gp)
                     {
-                        state = PAUSE;
-                        key_debounce[KEY_P] = true;
+                        if (GamepadButtonTriggered(GAMEPAD_0, BUTTON_START))
+                            state = PAUSE;
                     }
+                    else
+                    {
+                        if (key[KEY_P] && !key_debounce[KEY_P])
+                        {
+                            state = PAUSE;
+                            key_debounce[KEY_P] = true;
+                        }
 
-                    if (!key[KEY_P])
-                        key_debounce[KEY_P] = false;
+                        if (!key[KEY_P])
+                            key_debounce[KEY_P] = false;
+                    }
                     break;
 
                 case PAUSE:
@@ -189,13 +250,21 @@ int main()
                         done = true;
                     }
 
-                    if (key[KEY_P] && !key_debounce[KEY_P])
+                    if (using_gp)
                     {
-                        state = PLAY;
-                        key_debounce[KEY_P] = true;
+                        if (GamepadButtonTriggered(GAMEPAD_0, BUTTON_START))
+                            state = PLAY;
                     }
-                    if (!key[KEY_P])
-                        key_debounce[KEY_P] = false;
+                    else
+                    {
+                        if (key[KEY_P] && !key_debounce[KEY_P])
+                        {
+                            state = PLAY;
+                            key_debounce[KEY_P] = true;
+                        }
+                        if (!key[KEY_P])
+                            key_debounce[KEY_P] = false;
+                    }
                     break;
 
                 case GAME_OVER:
@@ -212,19 +281,38 @@ int main()
                         hiscore = score;
 
 
-                    if (key[KEY_R])
+                    if (using_gp)
                     {
-                        // Reset the score for next game
-                        score = 0;
+                        if (GamepadButtonTriggered(GAMEPAD_0, BUTTON_START))
+                        {
+                            // Reset the score for next game
+                            score = 0;
 
-                        player.set_pos(MID_X, MID_Y);
+                            player.set_pos(MID_X, MID_Y);
 
-                        state = PLAY;
+                            state = PLAY;
+                        }
+                        else if (GamepadButtonTriggered(GAMEPAD_0, BUTTON_BACK))
+                        {
+                            done = true;
+                        }
                     }
-
-                    if (key[KEY_ESC])
+                    else
                     {
-                        done = true;
+                        if (key[KEY_R])
+                        {
+                            // Reset the score for next game
+                            score = 0;
+
+                            player.set_pos(MID_X, MID_Y);
+
+                            state = PLAY;
+                        }
+
+                        if (key[KEY_ESC])
+                        {
+                            done = true;
+                        }
                     }
                     break;
             }
@@ -245,11 +333,14 @@ int main()
                 textout_centre_ex(buffer, font, "ZOMBIES!", MID_X,
                         MID_Y - font_h,
                         makecol(255, 0, 0), -1);
-                textout_centre_ex(buffer, font, "Press ENTER or click to begin",
+                textout_centre_ex(buffer, font, "Press ENTER or click for keyboard/mouse",
                         MID_X, MID_Y + font_h,
                         makecol(255, 255, 255), -1);
-                textout_centre_ex(buffer, font, "Press ESC to exit", MID_X,
+                textout_centre_ex(buffer, font, "Press Start to use the controller", MID_X,
                         MID_Y + (3 * font_h),
+                        makecol(255, 255, 255), -1);
+                textout_centre_ex(buffer, font, "Press ESC or Back to exit", MID_X,
+                        MID_Y + (5 * font_h),
                         makecol(255, 255, 255), -1);
                 break;
 
@@ -264,7 +355,8 @@ int main()
                 for (z_it = zombies.begin(); z_it != zombies.end(); z_it++)
                     (*z_it)->draw(buffer);
 
-                draw_mouse(buffer);
+                if (!using_gp)
+                    draw_mouse(buffer);
 
                 textprintf_ex(buffer, font, 0, 0, makecol(0, 0, 0), -1, "%-12s %d",
                         "High Score:", hiscore);
@@ -275,8 +367,16 @@ int main()
             case PAUSE:
                 textout_centre_ex(buffer, font, "PAUSE", MID_X,
                         MID_Y - font_h, makecol(0, 0, 0), -1);
-                textout_centre_ex(buffer, font, "Press ESC to exit", MID_X,
-                        MID_Y + font_h, makecol(0, 0, 0), -1);
+                if (using_gp)
+                {
+                    textout_centre_ex(buffer, font, "Press Back to exit", MID_X,
+                            MID_Y + font_h, makecol(0, 0, 0), -1);
+                }
+                else
+                {
+                    textout_centre_ex(buffer, font, "Press ESC to exit", MID_X,
+                            MID_Y + font_h, makecol(0, 0, 0), -1);
+                }
                 break;
 
             case GAME_OVER:
@@ -291,10 +391,21 @@ int main()
 
                 textout_centre_ex(buffer, font, "GAME OVER", MID_X,
                         MID_Y - font_h, makecol(255, 0, 0), -1);
-                textout_centre_ex(buffer, font, "Press R to retart", MID_X,
-                        MID_Y + font_h, makecol(255, 255, 255), -1);
-                textout_centre_ex(buffer, font, "Press ESC to exit", MID_X,
-                        MID_Y + (3 * font_h), makecol(255, 255, 255), -1);
+
+                if (using_gp)
+                {
+                    textout_centre_ex(buffer, font, "Press Start to retart", MID_X,
+                            MID_Y + font_h, makecol(255, 255, 255), -1);
+                    textout_centre_ex(buffer, font, "Press Back to exit", MID_X,
+                            MID_Y + (3 * font_h), makecol(255, 255, 255), -1);
+                }
+                else
+                {
+                    textout_centre_ex(buffer, font, "Press R to retart", MID_X,
+                            MID_Y + font_h, makecol(255, 255, 255), -1);
+                    textout_centre_ex(buffer, font, "Press ESC to exit", MID_X,
+                            MID_Y + (3 * font_h), makecol(255, 255, 255), -1);
+                }
                 break;
         }
 
