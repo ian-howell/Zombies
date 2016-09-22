@@ -6,3 +6,6 @@
 
 # Binary
 game
+
+# scores file
+.scores.txt

@@ -6,6 +6,7 @@
 #include "bullet.h"
 #include "mouse.h"
 #include "gamepad.h"
+#include "scores.h"
 
 #include <cstdlib>
 #include <time.h>
@@ -19,6 +20,8 @@ enum
     PAUSE,
     GAME_OVER,
 };
+
+const char* SCORE_FILE = ".scores.txt";
 
 volatile int ticks = 0;
 void ticker() { ticks++; } END_OF_FUNCTION(ticker)
@@ -62,7 +65,7 @@ int main()
     float old_angle = 0.0;
 
     int score = 0;
-    int hiscore = 0;
+    int hiscore = read_highscores(SCORE_FILE);
 
     char state = TITLE;
 
@@ -278,7 +281,10 @@ int main()
 
                     // Save the high score
                     if (score > hiscore)
+                    {
                         hiscore = score;
+                        write_highscores(SCORE_FILE, hiscore);
+                    }
 
 
                     if (using_gp)
