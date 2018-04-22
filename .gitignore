@@ -5,7 +5,8 @@
 *.o
 
 # Binary
-game
+game  # <- this was the old name
+zombies
 
 # scores file
 .scores.txt
