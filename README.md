@@ -9,4 +9,6 @@ party libraries:
 
 Note that to simplify the building of Allegro, you'll need cmake (>= v2.2)
 
-**NOTE:** As of 09-14-2017, Zombies has only been tested on Ubuntu 14.04
+**NOTE:** As of 04-22-2018, Zombies has only been tested on Ubuntu 14.04 and
+Ubuntu 16.04
+
